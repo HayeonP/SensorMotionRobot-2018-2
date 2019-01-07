@@ -1,0 +1,3 @@
+led_pub:
+  frequency: 20
+  startByte: 0

@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="parameter_tutorials" type="parameter_server" name="parameter_server" output="screen"/>
+  <param name="calculation_method" value="2"/>
+
+  <node pkg="beginner_tutorials" type="talker" name="talker"/>
+  <node pkg="beginner_tutorials" type="listener" name="listener"/>
+</launch>

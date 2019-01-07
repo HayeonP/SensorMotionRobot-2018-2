@@ -1,0 +1,77 @@
+<launch>
+    <!-- these are the arguments you can pass this launch file, for example
+    paused:=true -->
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="debug"           default="false" />
+        <arg name="gui"             default="false" />
+        <arg name="paused"          default="false" />
+        <arg name="use_sim_time"    default="true" />
+        <arg name="headless"        default="false" />
+        <arg name="world_name"      default="$(find mobile_robot)/world/jackal_race.world"/> <!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable -->
+    </include>
+
+   <param name="robot_description" command="$(find xacro)/xacro --inorder  
+        $(find mobile_robot_description)/urdf/mobile_robot.urdf.xacro"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" 
+        output="screen" args="-urdf -model MobileRobot -param robot_description -x -7 -y -1.5 -z 0.2" />
+
+    <node pkg="rviz" type="rviz" name="rviz" 
+        args="-d $(find mobile_robot)/rviz/basic.rviz"/>
+    
+    <node pkg="mobile_robot" type="odom_extractor" name="odom_extractor"/>
+    <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" 
+        args="-0.1 0 0 0 0 0 custom_base base_link 100" />
+    
+    <!--hardware-->
+    <node pkg="map_server" type="map_server" name="map_server" 
+        args="$(find mobile_robot)/map/jackel_race.yaml"/>
+
+          <!-- Arguments -->
+  <arg name="scan_topic"     default="scan"/>
+  <arg name="initial_pose_x" default="-7.0"/>
+  <arg name="initial_pose_y" default="-1.5"/>
+  <arg name="initial_pose_a" default="0"/>
+
+  <!-- AMCL -->
+  <node pkg="amcl" type="amcl" name="amcl">
+
+    <param name="min_particles"             value="500"/>
+    <param name="max_particles"             value="3000"/>
+    <param name="kld_err"                   value="0.02"/>
+    <param name="update_min_d"              value="0.20"/>
+    <param name="update_min_a"              value="0.20"/>
+    <param name="resample_interval"         value="1"/>
+    <param name="transform_tolerance"       value="0.5"/>
+    <param name="recovery_alpha_slow"       value="0.00"/>
+    <param name="recovery_alpha_fast"       value="0.00"/>
+    <param name="initial_pose_x"            value="$(arg initial_pose_x)"/>
+    <param name="initial_pose_y"            value="$(arg initial_pose_y)"/>
+    <param name="initial_pose_a"            value="$(arg initial_pose_a)"/>
+    <param name="gui_publish_rate"          value="50.0"/>
+
+    <remap from="scan"                      to="$(arg scan_topic)"/>
+    <param name="laser_max_range"           value="3.5"/>
+    <param name="laser_max_beams"           value="180"/>
+    <param name="laser_z_hit"               value="0.5"/>
+    <param name="laser_z_short"             value="0.05"/>
+    <param name="laser_z_max"               value="0.05"/>
+    <param name="laser_z_rand"              value="0.5"/>
+    <param name="laser_sigma_hit"           value="0.2"/>
+    <param name="laser_lambda_short"        value="0.1"/>
+    <param name="laser_likelihood_max_dist" value="2.0"/>
+    <param name="laser_model_type"          value="likelihood_field"/>
+
+    <param name="odom_model_type"           value="diff"/>
+    <param name="odom_alpha1"               value="0.1"/>
+    <param name="odom_alpha2"               value="0.1"/>
+    <param name="odom_alpha3"               value="0.1"/>
+    <param name="odom_alpha4"               value="0.1"/>
+    <param name="odom_frame_id"             value="custom_odom"/>
+    <param name="base_frame_id"             value="custom_base"/>
+
+  </node>
+</launch>

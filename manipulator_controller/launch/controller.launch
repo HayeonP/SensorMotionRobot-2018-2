@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="manipulator_controller" type="controller" name="controller"/>
+  <rosparam file="$(find manipulator_controller)/cfg/controller.yaml" command="load"/>
+</launch>

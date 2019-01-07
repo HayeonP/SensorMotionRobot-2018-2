@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="simple_goal_sender" type="custom_goal_sender" name="custom_goal_sender" output="screen"/>
+  <rosparam file="$(find simple_goal_sender)/cfg/goal2.yaml" command="load"/>
+</launch>

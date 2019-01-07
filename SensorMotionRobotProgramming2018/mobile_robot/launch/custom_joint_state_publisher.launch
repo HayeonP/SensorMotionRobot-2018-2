@@ -1,0 +1,13 @@
+<launch>
+    <arg name="gui" default="False" />
+    <param name="robot_description" command="$(find xacro)/xacro --inorder  
+        $(find mobile_robot_description)/urdf/mobile_robot.urdf.xacro"/>
+
+    <param name="use_gui" value="$(arg gui)" />
+
+    <node name="custom_joint_state_publisher" pkg="mobile_robot" type="custom_joint_state_publisher" />
+    <rosparam command="load" file="$(find mobile_robot)/cfg/joint_goal.yaml" />
+    
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node pkg="rviz" type="rviz" name="rviz"/>
+</launch>

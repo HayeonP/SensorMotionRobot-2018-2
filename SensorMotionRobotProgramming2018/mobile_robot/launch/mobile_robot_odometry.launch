@@ -1,0 +1,9 @@
+<launch>
+    <node pkg="mobile_robot" type="mobile_robot_odometry" name="mobile_robot_odometry"/>
+    <rosparam command="load" file="$(find mobile_robot)/cfg/mobile_robot_odometry.yaml"/>
+    
+    <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" 
+        args="0.1 0 0 0 0 0 custom_base base_link 100" />
+
+        
+</launch>
